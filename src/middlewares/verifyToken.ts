@@ -25,7 +25,7 @@ const verifyToken = (req: Request, res: Response, next: NextFunction): void => {
 
         const validTokenPayload = jwt.verify(bearerToken, process.env.TOKEN_SECRET);
 
-        req.payload = validTokenPayload;
+        req.payload = validTokenPayload as jwt.JwtPayload;
 
         next();
     } catch (error) {

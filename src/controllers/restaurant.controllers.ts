@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
-import Restaurant from '../models/Restaurant';
+import Restaurant from '../models/Restaurant.model';
+import User from '../models/User.model';
 
 const getAllRestaurants = (req: Request, res: Response, next: NextFunction) => {
 
@@ -53,4 +54,19 @@ const deleteRestaurant = (req: Request, res: Response, next: NextFunction) => {
         .catch((error) => next(error));
 };
 
-export { getAllRestaurants, getRestaurantById, createRestaurant, deleteRestaurant, updateRestaurant };
+const addFavoriteRestaurant = (req: Request, res: Response, next: NextFunction) => {
+
+    if (!req.payload) {
+        return res.status(401).json({ message: "No token payload found" });
+    }
+
+    const { id: restaurantId } = req.params;
+    const { userId } = req.payload;
+
+    User
+        .findByIdAndUpdate(userId, { $push: { favoriteRestaurants: restaurantId } }, { new: true, runValidators: true })
+        .then(() => res.status(200).json({ message: "Restaurant added to favorites" }))
+        .catch((error) => next(error));
+}
+
+export { getAllRestaurants, getRestaurantById, createRestaurant, deleteRestaurant, updateRestaurant, addFavoriteRestaurant };

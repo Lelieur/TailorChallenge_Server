@@ -1,4 +1,4 @@
-import User from '../models/User';
+import User from '../models/User.model';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
@@ -72,9 +72,9 @@ const loginUser = (req: Request, res: Response, next: NextFunction) => {
                 return;
             }
 
-            const { _id, username, email } = user;
+            const { _id: userId, username, email } = user;
 
-            const payload = { _id, username, email };
+            const payload = { userId, username, email };
 
             const authToken = jwt.sign(
                 payload,
@@ -82,7 +82,7 @@ const loginUser = (req: Request, res: Response, next: NextFunction) => {
                 { algorithm: 'HS256', expiresIn: "6h" },
             );
 
-            res.status(200).json({ token: authToken, id: user._id });
+            res.status(200).json({ token: authToken });
         })
         .catch((error) => next(error));
 }

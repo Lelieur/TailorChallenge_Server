@@ -18,7 +18,11 @@ const userSchema = new Schema({
         required: [true, 'Add your password'],
         minlength: [8, 'The password must be at least 8 characters long'],
         match: [/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]+$/, 'Password must contain at least one number and one special character']
-    }
+    },
+    favoriteRestaurants: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Restaurant'
+    }]
 }, { timestamps: true });
 
 const User = model('User', userSchema);

@@ -69,4 +69,18 @@ const addFavoriteRestaurant = (req: Request, res: Response, next: NextFunction) 
         .catch((error) => next(error));
 }
 
+const removeFavoriteRestaurant = (req: Request, res: Response, next: NextFunction) => {
+
+    if (!req.payload) {
+        return res.status(401).json({ message: "No token payload found" });
+    }
+    const { id: restaurantId } = req.params;
+    const { userId } = req.payload;
+
+    User
+        .findByIdAndUpdate(userId, { $pull: { favoriteRestaurants: restaurantId } }, { new: true, runValidators: true })
+        .then(() => res.status(200).json({ message: "Restaurant removed from favorites" }))
+        .catch((error) => next(error));
+}
+
 export { getAllRestaurants, getRestaurantById, createRestaurant, deleteRestaurant, updateRestaurant, addFavoriteRestaurant };
